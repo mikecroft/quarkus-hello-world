@@ -26,4 +26,4 @@ steps:
 - task: oc-cmd@2
   inputs:
     openshiftService: 'azure-devops-pru-test'
-    cmd: 'new-app quarkus-hello-world'
+    cmd: 'new-app --strategy=docker --binary --name quarkus-hello-world'
