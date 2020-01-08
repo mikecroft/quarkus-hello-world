@@ -20,14 +20,20 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
-- task: oc-setup@2
+- task: Docker@2
   inputs:
-    openshiftService: 'azure-devops-pru-test'
-- task: oc-cmd@2
-  inputs:
-    openshiftService: 'azure-devops-pru-test'
-    cmd: '-n pru-test new-build --strategy=docker --binary --name quarkus-hello-world'
-- task: oc-cmd@2
-  inputs:
-    openshiftService: 'azure-devops-pru-test'
-    cmd: '-n pru-test start-build --from-dir="."  bc/quarkus-hello-world'
+    containerRegistry: 'docker-hub'
+    repository: 'quarkus-hello-world'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+# - task: oc-setup@2
+#   inputs:
+#     openshiftService: 'azure-devops-pru-test'
+# - task: oc-cmd@2
+#   inputs:
+#     openshiftService: 'azure-devops-pru-test'
+#     cmd: '-n pru-test new-build --strategy=docker --binary --name quarkus-hello-world'
+# - task: oc-cmd@2
+#   inputs:
+#     openshiftService: 'azure-devops-pru-test'
+#     cmd: '-n pru-test start-build --from-dir="."  bc/quarkus-hello-world'
