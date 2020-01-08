@@ -26,7 +26,7 @@ steps:
 - task: oc-cmd@2
   inputs:
     openshiftService: 'azure-devops-pru-test'
-    cmd: '-n pru-test new-build --strategy=docker --dockerfile=src/main/docker/Dockerfile.jvm --binary --name quarkus-hello-world'
+    cmd: '-n pru-test new-build --strategy=docker --binary --name quarkus-hello-world'
 - task: oc-cmd@2
   inputs:
     openshiftService: 'azure-devops-pru-test'
