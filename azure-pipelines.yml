@@ -26,7 +26,7 @@ steps:
     repository: 'quarkus-hello-world'
     command: 'buildAndPush'
     Dockerfile: '**/src/main/docker/Dockerfile.multistage'
-    buildContext: '**/../../..'
+    buildContext: '**/..'
         
 # - task: oc-setup@2
 #   inputs:
