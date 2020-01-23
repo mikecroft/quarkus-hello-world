@@ -24,7 +24,7 @@ steps:
   inputs:
     # containerRegistry: 'quarkus-nexus'
     containerRegistry: 'docker-hub'
-    repository: 'quarkus-hello-world'
+    repository: 'mikecroft/quarkus-hello-world'
     command: 'buildAndPush'
     Dockerfile: '**/src/main/docker/Dockerfile.multistage'
     buildContext: '**/..'
