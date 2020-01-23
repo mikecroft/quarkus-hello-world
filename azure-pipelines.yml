@@ -22,12 +22,14 @@ steps:
 #     goals: 'package'
 - task: Docker@2
   inputs:
-    containerRegistry: 'quarkus-nexus'
+    # containerRegistry: 'quarkus-nexus'
+    containerRegistry: 'docker-hub'
     repository: 'quarkus-hello-world'
     command: 'buildAndPush'
     Dockerfile: '**/src/main/docker/Dockerfile.multistage'
     buildContext: '**/..'
         
+
 # - task: oc-setup@2
 #   inputs:
 #     openshiftService: 'azure-devops-quarkus'
