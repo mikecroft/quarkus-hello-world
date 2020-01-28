@@ -3,49 +3,45 @@ package org.acme.rest.json;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-
+import io.quarkus.test.junit.QuarkusTest;
 import javax.ws.rs.core.MediaType;
-
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 public class FruitResourceTest {
 
     @Test
+    @Order(1)
     public void testList() {
         given()
           .when().get("/fruits")
-          .then()
-             .statusCode(200)
-             .body("$.size()", is(2),
-                     "name", containsInAnyOrder("Apple", "Pineapple"),
-                     "description", containsInAnyOrder("Winter fruit", "Tropical fruit"));
+          .then().statusCode(200)
+             .body("$.size()", is(3),
+                     "name", containsInAnyOrder("Apple", "Cherry", "Banana"),
+                     "description", containsInAnyOrder("Gala", "Cavendish", "Black"));
     }
 
     @Test
+    @Order(2)
     public void testAdd() {
         given()
             .body("{\"name\": \"Pear\", \"description\": \"Winter fruit\"}")
             .header("Content-Type", MediaType.APPLICATION_JSON)
-        .when()
-            .post("/fruits")
-        .then()
-            .statusCode(200)
-            .body("$.size()", is(3),
-                    "name", containsInAnyOrder("Apple", "Pineapple", "Pear"),
-                    "description", containsInAnyOrder("Winter fruit", "Tropical fruit", "Winter fruit"));
+        .when().post("/fruits")
+        .then().statusCode(200)
+            .body("$.size()", is(4),
+                    "name", containsInAnyOrder("Apple", "Banana", "Pear", "Cherry"),
+                    "description", containsInAnyOrder("Winter fruit", "Gala", "Cavendish", "Black"));
 
         given()
             .body("{\"name\": \"Pear\", \"description\": \"Winter fruit\"}")
             .header("Content-Type", MediaType.APPLICATION_JSON)
-        .when()
-            .delete("/fruits")
-        .then()
-            .statusCode(200)
-            .body("$.size()", is(2),
-                    "name", containsInAnyOrder("Apple", "Pineapple"),
-                    "description", containsInAnyOrder("Winter fruit", "Tropical fruit"));
+        .when().delete("/fruits")
+        .then().statusCode(200)
+            .body("$.size()", is(3),
+                "name", containsInAnyOrder("Apple", "Cherry", "Banana"),
+                "description", containsInAnyOrder("Gala", "Cavendish", "Black"));
     }
 }
