@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  app: kustom-quarkus-hello-world
+  group: kustom-mikecroft
+  version: kustom-1.0-SNAPSHOT
+namespace: a-different-test
+bases:
+- base/
