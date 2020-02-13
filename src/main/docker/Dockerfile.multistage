@@ -1,19 +1,16 @@
 ####
 # This Dockerfile is used in order to build a container that runs the Quarkus application in native (no JVM) mode
 #
-# Before building the docker image run:
+# Build the image with:
 #
-# mvn package -Pnative -Dquarkus.native.container-build=true
-#
-# Then, build the image with:
-#
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/rest-json .
+# docker build -f src/main/docker/Dockerfile.multistage -t quarkus/rest-json .
 #
 # Then run the container using:
 #
 # docker run -i --rm -p 8080:8080 quarkus/rest-json
 #
 ###
+
 FROM quay.io/quarkus/centos-quarkus-maven:19.2.1 AS build
 COPY ./pom.xml ./pom.xml
 COPY ./src ./src
