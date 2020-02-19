@@ -8,7 +8,13 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
 
+import org.microshed.testing.SharedContainerConfig;
+import org.microshed.testing.jupiter.MicroShedTest;
+
+
+@MicroShedTest
 @QuarkusTest
+@SharedContainerConfig(QuarkusTestEnvironment.class)
 public class LegumeResourceTest {
 
     @Test
