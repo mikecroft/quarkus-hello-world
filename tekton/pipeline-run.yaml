@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: quarkus-hello-world-pipeline-run
+spec:
+  pipelineRef:
+    name: quarkus-hello-world-pipeline
+  workspaces:
+    - name: maven-settings
+      configMap:
+        name: custom-maven-settings
+    - name: shared-workspace
+      persistentvolumeclaim:
+        claimName: git-source-pvc
+    - name: local-maven-repo
+      persistentVolumeClaim:
+        claimName: mvn-repo-pvc

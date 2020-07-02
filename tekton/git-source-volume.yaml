@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: git-source-pvc
+  labels:
+    billingType: "hourly"
+    region: eu-gb
+    zone: lon04
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ibmc-block-gold

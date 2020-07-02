@@ -1,1 +1,4 @@
 helm/quarkus-hello-world/charts
+.classpath
+.project
+.settings/
