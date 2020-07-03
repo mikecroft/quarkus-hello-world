@@ -7,8 +7,7 @@ spec:
     name: quarkus-hello-world-pipeline
   workspaces:
     - name: maven-settings
-      configMap:
-        name: custom-maven-settings
+      emptyDir: {}
     - name: shared-workspace
       persistentvolumeclaim:
         claimName: git-source-pvc
