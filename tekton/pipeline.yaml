@@ -7,6 +7,10 @@ spec:
     - name: shared-workspace
     - name: maven-settings
     - name: local-maven-repo
+
+  params:
+    - name: SOURCE_URL
+      default: https://github.com/mikecroft/quarkus-hello-world.git
     
   tasks:
     - name: fetch-repo
@@ -17,7 +21,7 @@ spec:
           workspace: shared-workspace
       params:
         - name: url
-          value: https://github.com/mikecroft/quarkus-hello-world.git
+          value: $(params.SOURCE_URL)
         - name: deleteExisting
           value: "true"
 
