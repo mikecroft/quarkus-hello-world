@@ -7,6 +7,7 @@ spec:
     - name: shared-workspace
     - name: maven-settings
     - name: local-maven-repo
+    
   tasks:
     - name: fetch-repo
       taskRef:
@@ -18,15 +19,16 @@ spec:
         - name: url
           value: https://github.com/mikecroft/quarkus-hello-world.git
         - name: deleteExisting
-          value: "true"      
+          value: "true"
+
     - name: maven-build
       taskRef:
-        name: maven
+        name: maven-graalvm
       params:
         - name: GOALS
           value:
             - package
-            - -Pnative
+            # - -Pnative
       runAfter:
         - fetch-repo
       workspaces:
@@ -36,16 +38,19 @@ spec:
           workspace: shared-workspace
         - name: maven-repo
           workspace: local-maven-repo
+
     - name: build-container-image
       taskRef:
-        name: buildah
+        name: kaniko
       params:
         - name: IMAGE
           value: image-registry.openshift-image-registry.svc:5000/qks/quarkus-hello-world
         - name: DOCKERFILE
-          value: src/main/docker/native.Dockerfile
-      runAfter:
-        - maven-build
+          value: src/main/docker/jvm.Dockerfile
+        - name: EXTRA_ARGS
+          value: '--skip-tls-verify' # self-signed certs
       workspaces:
         - name: source
           workspace: shared-workspace
+      runAfter:
+        - maven-build

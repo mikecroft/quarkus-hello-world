@@ -5,6 +5,7 @@ metadata:
 spec:
   pipelineRef:
     name: quarkus-hello-world-pipeline
+  serviceAccountName: default
   workspaces:
     - name: maven-settings
       emptyDir: {}
