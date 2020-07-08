@@ -25,6 +25,8 @@ spec:
         - name: {{ .Chart.Name }}
           {{- with .Values.env }}
           env:
+            - name: QUARKUS_DATASOURCE_URL
+              value: jdbc:postgresql://{{ $.Release.Name }}-postgresql:5432/quarkus
             {{- toYaml . | nindent 12 }}
           {{- end }}
           securityContext:

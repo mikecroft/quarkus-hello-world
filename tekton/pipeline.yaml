@@ -11,6 +11,9 @@ spec:
   params:
     - name: SOURCE_URL
       default: https://github.com/mikecroft/quarkus-hello-world.git
+    - name: PROJECT
+    - name: APP_NAME
+      default: quarkus-hello-world
     
   tasks:
     - name: fetch-repo
@@ -48,7 +51,7 @@ spec:
         name: kaniko
       params:
         - name: IMAGE
-          value: image-registry.openshift-image-registry.svc:5000/qks/quarkus-hello-world
+          value: image-registry.openshift-image-registry.svc:5000/$(params.PROJECT)/$(params.APP_NAME)
         - name: DOCKERFILE
           value: src/main/docker/jvm.Dockerfile
         - name: EXTRA_ARGS

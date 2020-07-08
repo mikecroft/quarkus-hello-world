@@ -18,9 +18,9 @@ version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.16.0
+appVersion: latest
 
 dependencies:
 - name: postgresql
-  version: "8.2.1"
+  version: ~4.2.2 # must be at most major version 4 because we need Postgres 10.x
   repository: "https://charts.bitnami.com"

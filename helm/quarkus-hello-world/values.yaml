@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: docker-registry-default.apps.4659.example.opentlc.com/mikecroft/quarkus-hello-world
+  repository: image-registry.openshift-image-registry.svc:5000/qks/quarkus-hello-world
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -34,8 +34,6 @@ securityContext: {}
 
 
 env:
-  - name: QUARKUS_DATASOURCE_URL
-    value: 'jdbc:postgresql://rh-ocp-poc-postgresql:5432/quarkus'
   - name: MY_NEW_ENV_VAR
     value: 'wibble'
 
@@ -80,6 +78,7 @@ tolerations: []
 
 affinity: {}
 
-postgresqlPassword: quarkus
-postgresqlUsername: quarkus
-postgresqlDatabase: quarkus
+postgresql:
+    postgresqlPassword: quarkus
+    postgresqlUsername: quarkus
+    postgresqlDatabase: quarkus
