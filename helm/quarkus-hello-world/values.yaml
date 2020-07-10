@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: image-registry.openshift-image-registry.svc:5000/qks/quarkus-hello-world
+  repository: image-registry.openshift-image-registry.svc:5000/a-tekton-test/quarkus-hello-world
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -82,3 +82,6 @@ postgresql:
     postgresqlPassword: quarkus
     postgresqlUsername: quarkus
     postgresqlDatabase: quarkus
+
+    image:
+        tag: "10"

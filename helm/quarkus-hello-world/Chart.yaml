@@ -22,5 +22,5 @@ appVersion: latest
 
 dependencies:
 - name: postgresql
-  version: ~4.2.2 # must be at most major version 4 because we need Postgres 10.x
+  version: ~8.10.14
   repository: "https://charts.bitnami.com"

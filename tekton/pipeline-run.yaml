@@ -6,6 +6,15 @@ spec:
   pipelineRef:
     name: quarkus-hello-world-pipeline
   serviceAccountName: default
+
+  params:
+    - name: SOURCE_URL
+      value: https://github.com/mikecroft/quarkus-hello-world.git
+    - name: PROJECT
+      value: a-tekton-test
+    - name: APP_NAME
+      value: quarkus-hello-world
+
   workspaces:
     - name: maven-settings
       emptyDir: {}

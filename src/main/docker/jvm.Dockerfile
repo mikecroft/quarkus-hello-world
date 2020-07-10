@@ -14,10 +14,13 @@
 # docker run -i --rm -p 8080:8080 quarkus/rest-json-jvm
 #
 ###
-FROM fabric8/java-ubi-openjdk11-jdk
+FROM azul/zulu-openjdk-alpine:14
+# FROM fabric8/java-ubi-openjdk11-jdk
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV AB_ENABLED=jmx_exporter
+RUN mkdir -p /deployments/lib/
 COPY target/lib/* /deployments/lib/
 COPY target/*-runner.jar /deployments/app.jar
 EXPOSE 8080
-ENTRYPOINT [ "/deployments/run-java.sh" ]
+# ENTRYPOINT [ "/deployments/run-java.sh" ]
+ENTRYPOINT [ "java", "-jar", "/deployments/app.jar" ]
