@@ -1,38 +1,50 @@
 package org.acme.rest.json;
 
 import io.quarkus.panache.common.Sort;
+import jakarta.json.Json;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
+
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.json.Json;
-import javax.transaction.Transactional;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
-
-@Path("fruits")
-@ApplicationScoped
-@Produces("application/json")
-@Consumes("application/json")
+@Path("/fruits")
 public class FruitResource {
-
-    @GET
-    public List<Fruit> get() {
-        return Fruit.listAll(Sort.by("name"));
-    }
+//
+//    private Set<Fruit> fruits = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap<>()));
+//
+//    public FruitResource() {
+//        fruits.add(new Fruit("Apple", "Winter fruit"));
+//        fruits.add(new Fruit("Pineapple", "Tropical fruit"));
+//    }
+//
+//    @GET
+//    public Set<Fruit> list() {
+//        return fruits;
+//    }
+//
+//    @POST
+//    public Set<Fruit> add(Fruit fruit) {
+//        fruits.add(fruit);
+//        return fruits;
+//    }
+//
+//    @DELETE
+//    public Set<Fruit> delete(Fruit fruit) {
+//        fruits.removeIf(existingFruit -> existingFruit.name.contentEquals(fruit.name));
+//        return fruits;
+//    }
+//}
+@GET
+public List<Fruit> get() {
+    return Fruit.listAll(Sort.by("name"));
+}
 
     @GET
     @Path("{id}")
-    public Fruit getSingle(@PathParam Long id) {
+    public Fruit getSingle(@PathParam("id") Long id) {
         Fruit entity = Fruit.findById(id);
         if (entity == null) {
             throw new WebApplicationException("Fruit with id of " + id + " does not exist.", 404);
@@ -54,7 +66,7 @@ public class FruitResource {
     @PUT
     @Path("{id}")
     @Transactional
-    public Fruit update(@PathParam Long id, Fruit fruit) {
+    public Fruit update(@PathParam("id") Long id, Fruit fruit) {
         if (fruit.name == null) {
             throw new WebApplicationException("Fruit Name was not set on request.", 422);
         }
@@ -73,7 +85,7 @@ public class FruitResource {
     @DELETE
     @Path("{id}")
     @Transactional
-    public Response delete(@PathParam Long id) {
+    public Response delete(@PathParam("id") Long id) {
         Fruit entity = Fruit.findById(id);
         if (entity == null) {
             throw new WebApplicationException("Fruit with id of " + id + " does not exist.", 404);

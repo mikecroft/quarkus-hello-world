@@ -8,23 +8,17 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
 
-import org.microshed.testing.SharedContainerConfig;
-import org.microshed.testing.jupiter.MicroShedTest;
-
-
-@MicroShedTest
 @QuarkusTest
-@SharedContainerConfig(QuarkusTestEnvironment.class)
 public class LegumeResourceTest {
 
     @Test
     public void testList() {
         given()
-          .when().get("/legumes")
-          .then()
-             .statusCode(200)
-             .body("$.size()", is(2),
-                     "name", containsInAnyOrder("Carrot", "Zucchini"),
-                     "description", containsInAnyOrder("Root vegetable, usually orange", "Summer squash"));
+                .when().get("/legumes")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(2),
+                        "name", containsInAnyOrder("Carrot", "Zucchini"),
+                        "description", containsInAnyOrder("Root vegetable, usually orange", "Summer squash"));
     }
 }

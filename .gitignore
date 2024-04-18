@@ -2,3 +2,6 @@ helm/quarkus-hello-world/charts
 .classpath
 .project
 .settings/
+*.iml
+.idea/
+target/
