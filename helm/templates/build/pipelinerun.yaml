@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    chains.tekton.dev/signed: 'true'
+  name: {{ include "quarkus-hello-world.fullname" . }}
+  finalizers:
+    - chains.tekton.dev/pipelinerun
+  labels:
+    tekton.dev/pipeline: {{ include "quarkus-hello-world.fullname" . }}
+spec:
+  pipelineRef:
+    name: {{ include "quarkus-hello-world.fullname" . }}
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+    - name: build
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+          storageClassName: gp3-csi
+          volumeMode: Filesystem

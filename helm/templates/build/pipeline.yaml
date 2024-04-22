@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: {{ include "quarkus-hello-world.fullname" . }}
+spec:
+  tasks:
+    - name: git-clone
+    {{- toYaml .Values.build.gitClone | nindent 6}}
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: build
+    - name: maven
+    {{- toYaml .Values.build.maven | nindent 6}}
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: ClusterTask
+        name: maven
+      workspaces:
+        - name: source
+          workspace: build
+        - name: maven-settings
+          workspace: build
+    - name: buildah
+    {{- toYaml .Values.build.buildah | nindent 6}}
+      runAfter:
+        - maven
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: build
+  workspaces:
+    - name: build
