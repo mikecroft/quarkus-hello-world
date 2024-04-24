@@ -55,6 +55,7 @@ postgresql:
   global:
     postgresql:
       auth:
+        postgresPassword: quarkus
         username: quarkus
         password: quarkus
         database: quarkus
