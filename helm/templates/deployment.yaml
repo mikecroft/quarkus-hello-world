@@ -29,8 +29,6 @@ spec:
               value: jdbc:postgresql://{{ $.Release.Name }}-postgresql:5432/quarkus
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

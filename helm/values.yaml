@@ -52,11 +52,12 @@ resources:
     memory: 128Mi
 
 postgresql:
-    postgresqlPassword: quarkus
-    postgresqlUsername: quarkus
-    postgresqlDatabase: quarkus
-    # image:
-    #     tag: "10"
+  global:
+    postgresql:
+      auth:
+        username: quarkus
+        password: quarkus
+        database: quarkus
 
 
 build:
