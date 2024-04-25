@@ -11,12 +11,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "quarkus-hello-world.localPostgresSelectorLabels" . | nindent 4 }}
+      {{- include "quarkus-hello-world.localPostgresSelectorLabels" . | nindent 6 }}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        {{- include "quarkus-hello-world.localPostgresSelectorLabels" . | nindent 4 }}
+        {{- include "quarkus-hello-world.localPostgresSelectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: container
