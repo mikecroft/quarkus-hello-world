@@ -58,6 +58,8 @@ postgresql:
       username: quarkus
       password: quarkus
       database: quarkus
+  primary:
+    pgHbaConfiguration: "host all all 0.0.0.0/0 scram-sha-256"
 
 
 build:
