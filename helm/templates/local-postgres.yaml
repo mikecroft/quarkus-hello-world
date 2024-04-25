@@ -22,14 +22,14 @@ spec:
         - name: container
           image: {{ .Values.localPostgres.image }}
           ports:
-            - containerPort: 8080
+            - containerPort: 5432
               protocol: TCP
           env:
             - name: POSTGRESQL_USER
               value: quarkus
             - name: POSTGRESQL_PASSWORD
               value: quarkus
-            - name: POSTGRESQL_DB
+            - name: POSTGRESQL_DATABASE
               value: quarkus
           resources: {}
           terminationMessagePath: /dev/termination-log
@@ -61,7 +61,7 @@ spec:
     - name: tcp-postgresql
       protocol: TCP
       port: 5432
-      targetPort: tcp-postgresql
+      targetPort: 5432
   internalTrafficPolicy: Cluster
   type: ClusterIP
   ipFamilyPolicy: SingleStack
