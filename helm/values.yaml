@@ -51,6 +51,18 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+localPostgres:
+  disabled: false
+  env:
+  - name: POSTGRESQL_USER
+    value: quarkus
+  - name: POSTGRESQL_PASSWORD
+    value: quarkus
+  - name: POSTGRESQL_DB
+    value: quarkus
+  image: "image-registry.openshift-image-registry.svc:5000/openshift/postgresql@sha256:37d992f9159b539fff761065fc36cf59d90540e6e6657bf85830a162f6806060"
+
+
 postgresql:
   postgresql:
     auth:
@@ -58,8 +70,6 @@ postgresql:
       username: quarkus
       password: quarkus
       database: quarkus
-  primary:
-    pgHbaConfiguration: "host all all 0.0.0.0/0 scram-sha-256"
 
 
 build:

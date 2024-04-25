@@ -50,6 +50,10 @@ Selector labels
 app.kubernetes.io/name: {{ include "quarkus-hello-world.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
+{{- define "quarkus-hello-world.localPostgresSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "quarkus-hello-world.name" . }}-postgresql
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
 
 {{/*
 Create the name of the service account to use

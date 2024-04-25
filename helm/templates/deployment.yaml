@@ -26,7 +26,11 @@ spec:
           {{- with .Values.env }}
           env:
             - name: QUARKUS_DATASOURCE_JDBC_URL
+              {{- if $.Values.localPostgres.disabled }}
               value: jdbc:postgresql://{{ $.Release.Name }}-postgresql:5432/quarkus
+              {{- else }}
+              value: jdbc:postgresql://{{ include "quarkus-hello-world.fullname" $ }}-postgresql:5432/quarkus
+              {{- end }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
