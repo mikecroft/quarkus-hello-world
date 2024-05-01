@@ -121,7 +121,7 @@ build:
     - name: CONTEXT
       value: .
     - name: TLSVERIFY
-      value: 'true'
+      value: 'false'
     - name: FORMAT
       value: oci
     - name: SKIP_PUSH
