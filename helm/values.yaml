@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: image-registry.openshift-image-registry.svc:5000/hello-world/quarkus-hello-world
+  repository: 'image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/{{ include "quarkus-hello-world.fullname" . }}'
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []

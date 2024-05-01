@@ -25,7 +25,7 @@ spec:
         - name: maven-settings
           workspace: build
     - name: buildah
-    {{- toYaml .Values.build.buildah | nindent 6}}
+    {{- tpl (toYaml .Values.build.buildah) . | nindent 6}}
       runAfter:
         - maven
       taskRef:
