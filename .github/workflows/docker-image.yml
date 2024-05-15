@@ -33,4 +33,7 @@ jobs:
       run: mvn -B package --file pom.xml
       
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag quarkus-hello-world:$(date +%s)
+    
+    - name: Push the Docker image
+      run: docker push ghcr.io/mikecroft/quarkus-hello-world:$(date +%s)
