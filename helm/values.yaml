@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: 'image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/quarkus-hello-world'
+  repository: 'image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/{{ include "quarkus-hello-world.fullname" . }}:{{ .Chart.AppVersion }}'
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -111,7 +111,7 @@ build:
   buildah:
     params:
     - name: IMAGE
-      value: 'image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/quarkus-hello-world'
+      value: 'image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/{{ include "quarkus-hello-world.fullname" . }}:{{ .Chart.AppVersion }}'
     - name: BUILDER_IMAGE
       value: 'registry.redhat.io/rhel8/buildah@sha256:b48f410efa0ff8ab0db6ead420a5d8d866d64af846fece5efb185230d7ecf591'
     - name: STORAGE_DRIVER

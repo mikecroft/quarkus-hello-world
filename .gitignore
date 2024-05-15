@@ -6,3 +6,4 @@ helm/charts
 .idea/
 target/
 .quarkus/
+.vscode/

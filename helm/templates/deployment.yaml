@@ -33,7 +33,7 @@ spec:
               {{- end }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ tpl (.Values.image.repository) . }}:{{ .Chart.AppVersion }}"
+          image: "{{ tpl (toYaml .Values.image.repository) . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
