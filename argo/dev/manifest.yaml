@@ -1,0 +1,300 @@
+---
+# Source: quarkus-hello-world/templates/local-postgres.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: rendered-quarkus-hello-world-postgresql
+  labels:
+    helm.sh/chart: quarkus-hello-world-0.1.0
+    app.kubernetes.io/name: quarkus-hello-world
+    app.kubernetes.io/instance: rendered
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: tcp-postgresql
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app.kubernetes.io/name: quarkus-hello-world-postgresql
+    app.kubernetes.io/instance: rendered
+---
+# Source: quarkus-hello-world/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: rendered-quarkus-hello-world
+  labels:
+    helm.sh/chart: quarkus-hello-world-0.1.0
+    app.kubernetes.io/name: quarkus-hello-world
+    app.kubernetes.io/instance: rendered
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: quarkus-hello-world
+    app.kubernetes.io/instance: rendered
+---
+# Source: quarkus-hello-world/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rendered-quarkus-hello-world
+  labels:
+    helm.sh/chart: quarkus-hello-world-0.1.0
+    app.kubernetes.io/name: quarkus-hello-world
+    app.kubernetes.io/instance: rendered
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: quarkus-hello-world
+      app.kubernetes.io/instance: rendered
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: quarkus-hello-world
+        app.kubernetes.io/instance: rendered
+    spec:
+      serviceAccountName: default
+      securityContext:
+        null
+      containers:
+        - name: quarkus-hello-world
+          env:
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              value: jdbc:postgresql://rendered-quarkus-hello-world-postgresql:5432/quarkus
+            - name: MY_NEW_ENV_VAR
+              value: wibble
+          image: "image-registry.openshift-image-registry.svc:5000/default/rendered-quarkus-hello-world:0.1.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+---
+# Source: quarkus-hello-world/templates/local-postgres.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: rendered-quarkus-hello-world-postgresql
+  labels:
+    helm.sh/chart: quarkus-hello-world-0.1.0
+    app.kubernetes.io/name: quarkus-hello-world
+    app.kubernetes.io/instance: rendered
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: quarkus-hello-world-postgresql
+      app.kubernetes.io/instance: rendered
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: quarkus-hello-world-postgresql
+        app.kubernetes.io/instance: rendered
+    spec:
+      containers:
+        - name: container
+          image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql@sha256:37d992f9159b539fff761065fc36cf59d90540e6e6657bf85830a162f6806060
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRESQL_USER
+              value: quarkus
+            - name: POSTGRESQL_PASSWORD
+              value: quarkus
+            - name: POSTGRESQL_DATABASE
+              value: quarkus
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+---
+# Source: quarkus-hello-world/templates/build/pipeline.yaml
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: rendered-quarkus-hello-world
+spec:
+  tasks:
+    - name: git-clone
+      params:
+      - name: url
+        value: https://github.com/mikecroft/quarkus-hello-world.git
+      - name: revision
+        value: master
+      - name: submodules
+        value: "true"
+      - name: depth
+        value: "1"
+      - name: sslVerify
+        value: "true"
+      - name: crtFileName
+        value: ca-bundle.crt
+      - name: deleteExisting
+        value: "true"
+      - name: verbose
+        value: "true"
+      - name: gitInitImage
+        value: registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:66f219b4d54a41b945cb5715ecd1fbb5d25431cf8dad4b06914a4cdc65b298cc
+      - name: userHome
+        value: /home/git
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: build
+    - name: maven
+      params:
+      - name: MAVEN_IMAGE
+        value: registry.redhat.io/ubi8/openjdk-17@sha256:a8165bc2cd5051a96d6937e25ed03155bbd4b731da6e58cebfe2ea83209c16d8
+      - name: GOALS
+        value:
+        - package
+        - -DskipTests
+      - name: PROXY_PROTOCOL
+        value: http
+      - name: CONTEXT_DIR
+        value: .
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: ClusterTask
+        name: maven
+      workspaces:
+        - name: source
+          workspace: build
+        - name: maven-settings
+          workspace: build
+    - name: buildah
+      params:
+      - name: IMAGE
+        value: image-registry.openshift-image-registry.svc:5000/default/rendered-quarkus-hello-world:0.1.0
+      - name: BUILDER_IMAGE
+        value: registry.redhat.io/rhel8/buildah@sha256:b48f410efa0ff8ab0db6ead420a5d8d866d64af846fece5efb185230d7ecf591
+      - name: STORAGE_DRIVER
+        value: vfs
+      - name: DOCKERFILE
+        value: ./Dockerfile
+      - name: CONTEXT
+        value: .
+      - name: TLSVERIFY
+        value: "false"
+      - name: FORMAT
+        value: oci
+      - name: SKIP_PUSH
+        value: "false"
+      runAfter:
+        - maven
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: build
+  workspaces:
+    - name: build
+---
+# Source: quarkus-hello-world/templates/build/pipelinerun.yaml
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    chains.tekton.dev/signed: 'true'
+  name: rendered-quarkus-hello-world
+  finalizers:
+    - chains.tekton.dev/pipelinerun
+  labels:
+    tekton.dev/pipeline: rendered-quarkus-hello-world
+spec:
+  pipelineRef:
+    name: rendered-quarkus-hello-world
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+    - name: build
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+          storageClassName: gp3-csi
+          volumeMode: Filesystem
+---
+# Source: quarkus-hello-world/templates/route.yaml
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    helm.sh/chart: quarkus-hello-world-0.1.0
+    app.kubernetes.io/name: quarkus-hello-world
+    app.kubernetes.io/instance: rendered
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+  name: rendered-quarkus-hello-world
+spec:                            
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: rendered-quarkus-hello-world
+    weight: 100
+  wildcardPolicy: None
+# See: https://github.com/openshift/origin/issues/24060
+#      https://bugzilla.redhat.com/show_bug.cgi?id=1773682
+status:
+  ingress:
+  - host: ""
